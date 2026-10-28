@@ -1,0 +1,16 @@
+# Python 3.12; direct runtime and notebook dependencies.
+drake==1.58.0
+h5py==3.16.0
+huggingface-hub==2.3.0
+imageio[ffmpeg]==2.38.1
+ipykernel==7.4.0
+jupyterlab==4.6.4
+matplotlib==3.11.2
+mujoco==3.3.7
+numpy==2.5.4
+opencv-python==5.0.0.93
+robosuite==1.4.0
+scipy==1.18.1
+torch==2.15.0
+torchvision==0.29.2
+transformers==5.21.0
