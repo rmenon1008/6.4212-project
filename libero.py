@@ -399,8 +399,9 @@ class LiberoEnv:
         image_size=128,
         render=True,
         video=False,
+        eye_in_hand=False,
     ):
-        render = render or video
+        render = render or video or eye_in_hand
         self.task_id = task_id
         self.task = NAMES[task_id]
         self.path = Path(dataset_dir) / (self.task + "_demo.hdf5")
@@ -431,11 +432,13 @@ class LiberoEnv:
         self.cameras = {}
         if render:
             self.scene_graph.AddRenderer("libero", MakeRenderEngineVtk(RenderEngineVtkParams()))
-            resolutions = {"agentview_rgb": image_size}
+            views = {"agentview_rgb": ("agentview", image_size)}
+            if eye_in_hand:
+                views["eye_in_hand_rgb"] = ("robot0_eye_in_hand", image_size)
             if video:
-                resolutions["video_rgb"] = 1024
-            for name, size in resolutions.items():
-                cid = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_CAMERA, "agentview")
+                views["video_rgb"] = ("agentview", 1024)
+            for name, (camera, size) in views.items():
+                cid = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_CAMERA, camera)
                 bid = int(self.model.cam_bodyid[cid])
                 frame = (
                     self.scene_graph.world_frame_id()

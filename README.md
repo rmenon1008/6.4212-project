@@ -4,6 +4,7 @@
 |---|---|
 | `libero.py` | Scene conversion, Drake environment, controller, downloads, human replay |
 | `trm.py` | Dataset, original model, training, learned-policy evaluation |
+| `datagen.py` | Scripted expert (IK + motion planning + OSC tracking) that generates demonstrations |
 | `project.ipynb` | Experiment settings, execution, plots, videos, conclusions |
 | `requirements.txt` | Pinned runtime and notebook dependencies |
 | `README.md` | Setup and reproduction instructions |
@@ -38,7 +39,19 @@ python trm.py train --batch-size 32
 python trm.py evaluate --tasks 0 3 4 --episodes 5 --video
 ```
 
-Use `python libero.py --help` or `python trm.py --help` for options. To replay
+Generate expert demonstrations for the three target tasks (table center = 2,
+on the ramekin = 5, on the stove = 7). Each successful episode samples a random
+valid object placement, plans a grasp/lift/place with IK and collision-free
+motion planning, and records the same observations and 7-D OSC actions as the
+human data. Files land in `data/generated/libero_spatial/` with the LIBERO HDF5
+layout and names, and replay with the human-data tools:
+
+```bash
+python datagen.py --tasks 2 5 7 --episodes 50 --workers 6
+python libero.py replay --data data/generated/libero_spatial --tasks 2 5 7 --episodes 2
+```
+
+Use `python libero.py --help`, `python trm.py --help`, or `python datagen.py --help` for options. To replay
 all 500 human demonstrations, use `python libero.py replay --episodes 50`.
 Downloads occupy approximately 6 GB, with assets in `external/LIBERO` and
 recordings in `data/LIBERO/libero_spatial`. ResNet18 and CLIP weights download
