@@ -1,0 +1,11 @@
+# Push-T experiments only (trm_pusht.py, pusht_dp_baseline.py). No Drake needed.
+# Versions tested on Python 3.11. diffusers is used only by the diffusion baseline.
+diffusers==0.42.0
+einops==0.8.2
+gdown==6.4.2
+matplotlib==3.11.2
+numpy==2.4.6
+pymunk==7.3.1
+shapely==2.2.0
+torch==2.14.1
+zarr==3.1.6

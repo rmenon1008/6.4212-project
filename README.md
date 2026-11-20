@@ -65,3 +65,31 @@ and [human demonstrations](https://huggingface.co/datasets/yifengzhu-hf/LIBERO-d
 LIBERO code is MIT licensed; demonstrations are CC BY 4.0. Credit: Bo Liu,
 Yifeng Zhu, Chongkai Gao, Yan Du, and Animesh Garg, *LIBERO: Benchmarking Knowledge
 Transfer for Lifelong Robot Learning*, NeurIPS 2023.
+
+## Push-T go/no-go test
+
+A CPU test of whether a tiny recursive policy works and whether adaptive halting
+saves compute, separate from the LIBERO pipeline and without Drake. What was done
+and what it showed is in [PUSHT_EXPERIMENTS.md](PUSHT_EXPERIMENTS.md).
+
+| File | Purpose |
+|---|---|
+| `pusht.py` | Push-T environment, extracted from the course's `diffusion_policy_pusht_state.ipynb` |
+| `trm_pusht.py` | Recursive policy, same-size MLP baseline, training, evaluation, halting, report |
+| `pusht_dp_baseline.py` | Pretrained Diffusion Policy on the same test seeds |
+| `pusht_analysis.py` | Follow-up analyses: failure diagnosis, noise control, diffusion restarts |
+| `requirements-pusht.txt` | Tested dependencies (Python 3.11) |
+
+```bash
+uv pip install -r requirements-pusht.txt
+python trm_pusht.py check                # harness and model checks, under a minute
+python trm_pusht.py run                  # 3 seeds of TRM and MLP, then the report (~17 min)
+python pusht_dp_baseline.py              # diffusion reference; downloads ~260 MB once
+python trm_pusht.py report               # rebuilds the report with the diffusion row
+python pusht_analysis.py failures        # see the module docstring for all analyses
+```
+
+Demonstrations download to `data/pusht/` on first use. Results go to `runs/pusht/`:
+`report.md`, `depth_curve.png`, `halting_pareto.png`, per-seed JSON, and
+`analysis/` for the follow-ups. The primary metric is mean max coverage, because
+replayed human demonstrations rarely reach the environment's 0.95 success threshold.
